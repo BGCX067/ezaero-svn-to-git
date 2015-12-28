@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Conflation Benchmark</title>
+
+</head><body>
+When I first heard the word <bold>conflation</bold>, my
+first thought was wtf, is that word made up? In the context I heard it, the term related to
+maintaining an up-to-date and coherent view of data for financial
+securities (such as a stocks or indexes). I thought the following
+definition from <a href="http://en.wiktionary.org/wiki/conflation">Wiktionary</a>
+was good:
+<blockquote>"A blend or fusion, esp. a composite reading or text
+formed by combining the material of two or more texts into a single
+text."
+</blockquote>
+In this post I publish some findings on a few different implementations of simple in-process conflation systems.&nbsp;<br><br>As an example, we need to maintain an up-to-date view of a Price
+object:<br><br><pre style="margin-left: 40px;">public interface Price {<br>&nbsp;&nbsp;&nbsp; long getId();<br>&nbsp;&nbsp;&nbsp; long getVersion();<br>&nbsp;&nbsp;&nbsp; double getBid();<br>&nbsp;&nbsp;&nbsp; double getAsk();<br>&nbsp;&nbsp;&nbsp; double getLast();<br>&nbsp;&nbsp;&nbsp; long getVolume();<br>}</pre>
+</body></html>

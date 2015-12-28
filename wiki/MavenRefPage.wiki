@@ -1,0 +1,207 @@
+#summary Maven Reference Page
+#labels java,maven,build
+
+<wiki:toc max_depth="2" />
+
+=Reference=
+  * http://www.sonatype.com/books/maven-book/reference/
+  * http://www.jarvana.com/jarvana/
+
+=Main Goals=
+
+  * `mvn verify` - run all tests.
+  * `mvn install` - install package in local repo.
+  * `mvn deploy` - deploy package to remote repo.     
+
+*NOTE:* Skip test phase using : `mvn -Dmaven.test.skip=true ...`
+
+= Properties=
+Refer to this [http://docs.codehaus.org/display/MAVENUSER/MavenPropertiesGuide link] for a list of properties.
+
+== Profiles ==
+Maven manual [http://maven.apache.org/guides/introduction/introduction-to-profiles.html link]
+  * `mvn groupId:artifactId:goal -P profile-1,profile-2`
+
+{{{
+<profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>xxx</module>
+      </modules>
+      .
+      .
+      .
+    </profile>
+    <profile>
+      <id>integration</id>
+      <modules>
+        <module>integration</module>
+      </modules>
+    </profile>
+      .
+      .
+      .
+  </profiles>
+}}}
+
+
+
+=Artifact management=
+
+==Installing a local artifact==
+Maven manual [http://maven.apache.org/plugins/maven-install-plugin/usage.html link].
+
+Schema:
+{{{
+mvn install:install-file -Dfile=your-artifact-1.0.jar \
+                         [-DpomFile=your-pom.xml] \
+                         [-Dsources=src.jar] \
+                         [-Djavadoc=apidocs.jar] \
+                         [-DgroupId=org.some.group] \
+                         [-DartifactId=your-artifact] \
+                         [-Dversion=1.0] \
+                         [-Dpackaging=jar] \
+                         [-Dclassifier=sources] \
+                         [-DgeneratePom=true] \
+                         [-DcreateChecksum=true]
+}}}
+
+Snippets:
+{{{
+mvn install:install-file -Dpackaging=jar -DgroupId= -DartifactId= -Dversion= -Dfile=
+}}}
+
+
+==Install a remote artifact==
+Maven manual [http://maven.apache.org/plugins/maven-deploy-plugin/deploy-file-mojo.html link].
+
+Schema:
+{{{
+mvn deploy:deploy-file -Durl=file://C:\m2-repo \
+                       -DrepositoryId=some.id \
+                       -Dfile=your-artifact-1.0.jar \
+                       [-DpomFile=your-pom.xml] \
+                       [-DgroupId=org.some.group] \
+                       [-DartifactId=your-artifact] \
+                       [-Dversion=1.0] \
+                       [-Dpackaging=jar] \
+                       [-Dclassifier=test] \
+                       [-DgeneratePom=true] \
+                       [-DgeneratePom.description="My Project Description"] \
+                       [-DrepositoryLayout=legacy] \
+                       [-DuniqueVersion=false]
+}}}
+
+Snippets:
+{{{
+mvn deploy:deploy-file -Dpackaging=jar -DrepositoryId= -Durl= -DgroupId= -DartifactId= -Dversion= -Dfile= 
+
+mvn deploy:deploy-file -Dpackaging=java-source -DgeneratePom=false -DrepositoryId= -Durl= -DgroupId= -DartifactId= -Dversion= -Dfile= 
+
+mvn deploy:deploy-file -Dpackaging=jar -DrepositoryId= -Durl=  -DpomFile= -Dfile= 
+
+mvn deploy:deploy-file -Dpackaging=java-source -DgeneratePom=false  -DrepositoryId= -Durl=  -DpomFile= -Dfile= 
+
+}}}
+
+==Unpack an artifact (such as native library)==
+Maven manual [http://maven.apache.org/plugins/maven-dependency-plugin/usage.html link].
+Useful HOWTO on installing native libs with Maven [http://buildanddeploy.com/node/14 here].
+{{{
+<project>
+...
+  <build>
+    <plugins>
+      ...
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.acme.widget</groupId>
+                  <artifactId>widget-native</artifactId>
+                  <version>1.2.3</version>
+                  <classifier>win32</classifier>
+                  <type>zip</type>
+                  <overWrite>false</overWrite> 
+                  <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      ...
+    </plugins>
+  </build>
+...
+</project>
+}}}
+
+==Running unit tests with native libs==
+
+{{{
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <environmentVariables><PATH>${project.build.directory}\lib</PATH></environmentVariables>
+          <systemProperties>
+            <property>
+              <name>java.library.path</name>
+              <value>${project.build.directory}/lib</value>
+            </property>
+          </systemProperties>
+        </configuration>
+      </plugin>
+  
+}}}
+
+==How to separate Unit Tests from Integration Tests==
+
+  * Refer to discussions [http://docs.codehaus.org/display/MAVENUSER/Maven+and+Integration+Testing here], [http://www.mail-archive.com/users@maven.apache.org/msg81355.html here] and [http://pgt.de/2006/04/04/integration-and-unit-test-strategies-with-maven2/ here].
+  * Use the !FailSafe [http://mojo.codehaus.org/failsafe-maven-plugin/index.html plugin]. And this [http://www.sonatype.com/people/2009/06/integration-tests-with-maven-part-1-failsafe-plugin/ tutorial].
+
+=Misc Helpful Links=
+  * How to use Ant to create a timestamp: [http://www.gadberry.com/aaron/2007/05/28/inject-build-time-timestamp-property-using-maven/ link]
+
+=Other Maven Repositories=
+
+!SpringSource Repo:
+{{{
+        <repository>
+          <id>com.springsource.repository.bundles.release</id>
+          <url>http://repository.springsource.com/maven/bundles/release</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+
+        <repository>
+          <id>com.springsource.repository.bundles.external</id>
+          <url>http://repository.springsource.com/maven/bundles/external</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+}}}
+
+!Codehaus Repo:
+{{{
+        <repository>
+          <id>org.codehaus.repository</id>
+          <url>http://repository.codehaus.org/</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+}}}

@@ -1,0 +1,10 @@
+==Java==
+  * [http://java.sun.com/javase/reference/api.jsp All APIs]
+
+==JDK 6==
+  * [http://java.sun.com/javase/6/docs/api/ apidocs]
+  * [http://java.sun.com/javase/6/docs/ docs]
+  * [http://java.sun.com/javase/6/docs/api/java/util/Formatter.html java.util.Formatter]
+  * [http://java.sun.com/javase/6/docs/api/java/util/regex/Pattern.html java.util.regex.Pattern]
+  * [http://java.sun.com/javase/6/docs/api/java/text/SimpleDateFormat.html java.text.SimpleDateFormat]
+  * [http://java.sun.com/javase/6/docs/api/java/text/DecimalFormat.html java.test.DecimalFormat]
